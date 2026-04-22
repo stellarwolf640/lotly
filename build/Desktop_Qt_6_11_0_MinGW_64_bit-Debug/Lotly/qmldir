@@ -1,0 +1,6 @@
+module Lotly
+typeinfo appLotly.qmltypes
+prefer :/qt/qml/Lotly/
+Main 254.0 Main.qml
+depends QtQuick
+

@@ -1,0 +1,98 @@
+{
+    "classes": [
+        {
+            "className": "SimulationManager",
+            "lineNumber": 22,
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "lotId",
+                            "type": "QString"
+                        },
+                        {
+                            "name": "startHour",
+                            "type": "int"
+                        },
+                        {
+                            "name": "endHour",
+                            "type": "int"
+                        },
+                        {
+                            "name": "reportCount",
+                            "type": "int"
+                        },
+                        {
+                            "name": "minTrust",
+                            "type": "double"
+                        },
+                        {
+                            "name": "maxTrust",
+                            "type": "double"
+                        },
+                        {
+                            "name": "statusWeights",
+                            "type": "QStringList"
+                        }
+                    ],
+                    "index": 1,
+                    "lineNumber": 36,
+                    "name": "runSimulation",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "lotId",
+                            "type": "QString"
+                        }
+                    ],
+                    "index": 2,
+                    "lineNumber": 43,
+                    "name": "clearSimulation",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": false,
+                    "index": 0,
+                    "lineNumber": 25,
+                    "name": "lastSummary",
+                    "notify": "lastSummaryChanged",
+                    "override": false,
+                    "read": "lastSummary",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "virtual": false
+                }
+            ],
+            "qualifiedClassName": "SimulationManager",
+            "signals": [
+                {
+                    "access": "public",
+                    "index": 0,
+                    "lineNumber": 46,
+                    "name": "lastSummaryChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "simulationmanager.h",
+    "outputRevision": 69
+}

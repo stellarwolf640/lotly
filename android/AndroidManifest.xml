@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lotly.smartparking"
+    android:versionCode="1"
+    android:versionName="1.0">
+
+    <uses-sdk
+        android:minSdkVersion="28"
+        android:targetSdkVersion="34"/>
+
+    <!-- Network access for Places API and Geocoding API -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <application
+        android:name="org.qtproject.qt.android.bindings.QtApplication"
+        android:label="@string/app_name"
+        android:hardwareAccelerated="true"
+        android:extractNativeLibs="true">
+
+        <!--
+            Google Maps SDK for Android + Places SDK for Android API key.
+            This key must have the following APIs enabled in Google Cloud Console:
+              • Maps SDK for Android
+              • Places API (New)
+              • Geocoding API
+            Restrict the key to this app's package name and SHA-1 fingerprint
+            in the Cloud Console to prevent unauthorised use.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCceEAjZyoWeQ6wN2cIflHH6LH-3ib0Sfc"/>
+
+        <activity
+            android:name="org.qtproject.qt.android.bindings.QtActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
+            android:exported="true"
+            android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|layoutDirection|locale|fontScale|keyboard|keyboardHidden|navigation|mcc|mnc|density">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+            <!-- Qt runtime metadata -->
+            <meta-data android:name="android.app.lib_name"        android:value="appSmartParking"/>
+            <meta-data android:name="android.app.qt_sources_resource_id" android:resource="@array/qt_sources"/>
+            <meta-data android:name="android.app.repository"      android:value="default"/>
+            <meta-data android:name="android.app.qt_libs_resource_id"    android:resource="@array/qt_libs"/>
+            <meta-data android:name="android.app.bundled_libs_resource_id" android:resource="@array/bundled_libs"/>
+            <meta-data android:name="android.app.use_local_qt_libs"       android:value="1"/>
+            <meta-data android:name="android.app.bundle_local_qt_libs"    android:value="1"/>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,36 @@
+--bare
+-I
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug
+-I
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/SmartParking
+-I
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug
+-I
+C:/Qt/6.11.0/mingw_64/qml
+--resource
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qmake_SmartParking.qrc
+--resource
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appSmartParking_raw_qml_0.qrc
+--resource
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appSmartParking_raw_res_0.qrc
+D:/QT Projects/Lotly/qml/Main.qml
+D:/QT Projects/Lotly/qml/components/AvailabilityBar.qml
+D:/QT Projects/Lotly/qml/components/BottomNav.qml
+D:/QT Projects/Lotly/qml/components/ConfidenceBadge.qml
+D:/QT Projects/Lotly/qml/components/DetailRow.qml
+D:/QT Projects/Lotly/qml/components/LotCard.qml
+D:/QT Projects/Lotly/qml/components/ProgressBar.qml
+D:/QT Projects/Lotly/qml/components/SectionCard.qml
+D:/QT Projects/Lotly/qml/data/MockParkingData.qml
+D:/QT Projects/Lotly/qml/screens/HomeScreen.qml
+D:/QT Projects/Lotly/qml/screens/LotDetailScreen.qml
+D:/QT Projects/Lotly/qml/screens/MapScreen.qml
+D:/QT Projects/Lotly/qml/screens/WebMapView.qml
+D:/QT Projects/Lotly/qml/screens/PlaceholderScreen.qml
+D:/QT Projects/Lotly/qml/screens/RecommendationScreen.qml
+D:/QT Projects/Lotly/qml/screens/RecommendationView.qml
+D:/QT Projects/Lotly/qml/screens/ReportScreen.qml
+D:/QT Projects/Lotly/qml/screens/SettingsScreen.qml
+D:/QT Projects/Lotly/qml/screens/DevToolsScreen.qml
+--json
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/appSmartParking_qmllint.json

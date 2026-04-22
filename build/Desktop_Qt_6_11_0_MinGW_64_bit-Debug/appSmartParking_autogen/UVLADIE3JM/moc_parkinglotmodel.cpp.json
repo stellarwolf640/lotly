@@ -1,0 +1,35 @@
+{
+    "classes": [
+        {
+            "className": "ParkingLotModel",
+            "enums": [
+                {
+                    "isClass": false,
+                    "isFlag": false,
+                    "lineNumber": 12,
+                    "name": "Roles",
+                    "values": [
+                        "IdRole",
+                        "NameRole",
+                        "LocationRole",
+                        "TotalSpacesRole",
+                        "PredictedAvailableSpacesRole",
+                        "ConfidenceRole",
+                        "ExplanationRole"
+                    ]
+                }
+            ],
+            "lineNumber": 7,
+            "object": true,
+            "qualifiedClassName": "ParkingLotModel",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QAbstractListModel"
+                }
+            ]
+        }
+    ],
+    "inputFile": "parkinglotmodel.h",
+    "outputRevision": 69
+}

@@ -1,0 +1,17 @@
+--resource
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qmake_SmartParking.qrc
+--resource
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appSmartParking_raw_qml_0.qrc
+--resource
+D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appSmartParking_raw_res_0.qrc
+/qt/qml/SmartParking/qml/Main.qml
+/qt/qml/SmartParking/qml/components/ConfidenceBadge.qml
+/qt/qml/SmartParking/qml/components/DetailRow.qml
+/qt/qml/SmartParking/qml/components/LotCard.qml
+/qt/qml/SmartParking/qml/components/ProgressBar.qml
+/qt/qml/SmartParking/qml/screens/HomeScreen.qml
+/qt/qml/SmartParking/qml/screens/LotDetailScreen.qml
+/qt/qml/SmartParking/qml/screens/PlaceholderScreen.qml
+/qt/qml/SmartParking/qml/screens/RecommendationScreen.qml
+/qt/qml/SmartParking/qml/screens/RecommendationView.qml
+/qt/qml/SmartParking/qml/screens/ReportScreen.qml

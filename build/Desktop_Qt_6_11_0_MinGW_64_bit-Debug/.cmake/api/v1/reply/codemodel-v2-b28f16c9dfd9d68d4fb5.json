@@ -1,0 +1,223 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-73819c9d833f1dd3f0b2.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "SmartParkingAvailabilityPredictionSystem",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "all_aotstats::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_aotstats-Debug-aa04906ee313dd47ab4a.json",
+					"name" : "all_aotstats",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint-Debug-37060136418b25912187.json",
+					"name" : "all_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_json-Debug-3e4c2ab769a5ee3bce8c.json",
+					"name" : "all_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmllint_module-Debug-4e8f933aa31bb269036e.json",
+					"name" : "all_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_qmltyperegistrations::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_qmltyperegistrations-Debug-534d54f2710bddec9493.json",
+					"name" : "all_qmltyperegistrations",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking-Debug-5da8239d650f18863513.json",
+					"name" : "appSmartParking",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_autogen-Debug-ad79517121beb929ecd8.json",
+					"name" : "appSmartParking_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_autogen_timestamp_deps-Debug-a4083433edceec7f4e30.json",
+					"name" : "appSmartParking_autogen_timestamp_deps",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_copy_qml::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_copy_qml-Debug-6f0431de00ef96d5484e.json",
+					"name" : "appSmartParking_copy_qml",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_copy_res::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_copy_res-Debug-f63283e7585fe72cb198.json",
+					"name" : "appSmartParking_copy_res",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_qmlimportscan::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_qmlimportscan-Debug-13b0b3493622a2743ab2.json",
+					"name" : "appSmartParking_qmlimportscan",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_qmllint::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_qmllint-Debug-a787c2a96557c778aa9e.json",
+					"name" : "appSmartParking_qmllint",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_qmllint_json::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_qmllint_json-Debug-871089fe0d4f5e3104f8.json",
+					"name" : "appSmartParking_qmllint_json",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_qmllint_module::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_qmllint_module-Debug-89fe482a232bb729f51e.json",
+					"name" : "appSmartParking_qmllint_module",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "appSmartParking_qmltyperegistration::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-appSmartParking_qmltyperegistration-Debug-166a213447f8854c8dd6.json",
+					"name" : "appSmartParking_qmltyperegistration",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "clean_qml_context_properties::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-clean_qml_context_properties-Debug-471c1cdd62b7f71c087b.json",
+					"name" : "clean_qml_context_properties",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "dump_qml_context_properties::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-dump_qml_context_properties-Debug-afb5900f94c4e06391ff.json",
+					"name" : "dump_qml_context_properties",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "generate_qmlls_build_ini_file::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-generate_qmlls_build_ini_file-Debug-dcda1775b1618706fc50.json",
+					"name" : "generate_qmlls_build_ini_file",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "module_appSmartParking_aotstats_target::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-module_appSmartParking_aotstats_target-Debug-12f5454d93704a28e9f3.json",
+					"name" : "module_appSmartParking_aotstats_target",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/QT Projects/Lotly/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug",
+		"source" : "D:/QT Projects/Lotly"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

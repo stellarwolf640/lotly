@@ -1,0 +1,41 @@
+file(REMOVE_RECURSE
+  ".qt/rcc/qrc_appLotly_raw_qml_0.cpp"
+  ".qt/rcc/qrc_qmake_Lotly.cpp"
+  ".rcc/qmlcache/appLotly_Main_qml.cpp"
+  ".rcc/qmlcache/appLotly_Main_qml.cpp.aotstats"
+  ".rcc/qmlcache/appLotly_qmlcache_loader.cpp"
+  "CMakeFiles/appLotly.dir/appLotly_autogen/mocs_compilation.cpp.obj"
+  "CMakeFiles/appLotly.dir/appLotly_autogen/mocs_compilation.cpp.obj.d"
+  "CMakeFiles/appLotly.dir/applotly_qmltyperegistrations.cpp.obj"
+  "CMakeFiles/appLotly.dir/applotly_qmltyperegistrations.cpp.obj.d"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appLotly_raw_qml_0.cpp.obj"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appLotly_raw_qml_0.cpp.obj.d"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_Lotly.cpp.obj"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_Lotly.cpp.obj.d"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appLotly_Main_qml.cpp.obj"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appLotly_Main_qml.cpp.obj.d"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appLotly_qmlcache_loader.cpp.obj"
+  "CMakeFiles/appLotly.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appLotly_qmlcache_loader.cpp.obj.d"
+  "CMakeFiles/appLotly.dir/main.cpp.obj"
+  "CMakeFiles/appLotly.dir/main.cpp.obj.d"
+  "CMakeFiles/appLotly_autogen.dir/AutogenUsed.txt"
+  "CMakeFiles/appLotly_autogen.dir/ParseCache.txt"
+  "appLotly_autogen"
+  "Lotly/appLotly.qmltypes"
+  "appLotly.exe"
+  "appLotly.exe.manifest"
+  "appLotly.pdb"
+  "appLotly_autogen/mocs_compilation.cpp"
+  "appLotly_autogen/timestamp"
+  "applotly_qmltyperegistrations.cpp"
+  "libappLotly.dll.a"
+  "meta_types/appLotly_json_file_list.txt"
+  "meta_types/appLotly_json_file_list.txt.timestamp"
+  "meta_types/qt6applotly_metatypes.json"
+  "meta_types/qt6applotly_metatypes.json.gen"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/appLotly.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
