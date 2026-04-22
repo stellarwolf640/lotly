@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/SmartParking/">
-    <file alias="qml/data/MockParkingData.js">D:/QT Projects/Lotly/qml/data/MockParkingData.js</file>
-    <file alias="qtquickcontrols2.conf">D:/QT Projects/Lotly/qtquickcontrols2.conf</file>
-  </qresource>
-</RCC>
-
