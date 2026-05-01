@@ -1,5 +1,8 @@
 #pragma once
 
+#include <QDateTime>
+#include <QString>
+
 #include "lotreport.h"
 
 class DatabaseManager;

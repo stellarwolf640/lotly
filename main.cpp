@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QtQml/qqml.h>
+#include <QQuickStyle>
 #ifdef HAS_QTWEBVIEW
 #include <QtWebView/QtWebView>
 #endif
@@ -18,9 +19,14 @@ int main(int argc, char *argv[])
     QtWebView::initialize();
 #endif
 
+    // Must be set before QGuiApplication so Controls never probe for
+    // platform-specific styles (Windows / macOS / iOS).  Material is
+    // available on every Qt platform including Android.
+    QQuickStyle::setStyle("Material");
+
     QGuiApplication app(argc, argv);
     QCoreApplication::setOrganizationName("Lotly");
-    QCoreApplication::setApplicationName("Smart Parking Availability & Prediction System");
+    QCoreApplication::setApplicationName("Lotly");
 
     qmlRegisterUncreatableType<ParkingLotModel>(
         "SmartParking.Backend", 1, 0, "ParkingLotModel",
@@ -30,13 +36,17 @@ int main(int argc, char *argv[])
         "SmartParking.Backend", 1, 0, "SimulationManager",
         "SimulationManager is exposed by AppController.");
 
-    AppController   controller;
-    SettingsManager settings;
+    qmlRegisterUncreatableType<SettingsManager>(
+        "SmartParking.Backend", 1, 0, "SettingsManager",
+        "SettingsManager is exposed via appController.settings.");
+
+    AppController controller;
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("appController",   &controller);
     engine.rootContext()->setContextProperty("parkingLotModel", controller.parkingLotModel());
-    engine.rootContext()->setContextProperty("settingsManager", &settings);
+    // Keep settingsManager as a convenience alias so any legacy reference still compiles.
+    engine.rootContext()->setContextProperty("settingsManager", controller.settings());
 #ifdef HAS_QTWEBVIEW
     engine.rootContext()->setContextProperty("hasWebView", true);
 #else
@@ -49,5 +59,6 @@ int main(int argc, char *argv[])
         Qt::QueuedConnection);
 
     engine.loadFromModule("SmartParking", "Main");
+
     return app.exec();
 }

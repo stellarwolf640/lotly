@@ -4,13 +4,13 @@
     android:versionCode="1"
     android:versionName="1.0">
 
-    <uses-sdk
-        android:minSdkVersion="28"
-        android:targetSdkVersion="34"/>
-
     <!-- Network access for Places API and Geocoding API -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <!-- Location — needed for GPS fix and nearby parking search -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:name="org.qtproject.qt.android.bindings.QtApplication"
@@ -29,7 +29,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCceEAjZyoWeQ6wN2cIflHH6LH-3ib0Sfc"/>
+            android:value="AIzaSyDB0bD3_EOtFn21QQkDCtueCxfCqy1SpoI"/>
 
         <activity
             android:name="org.qtproject.qt.android.bindings.QtActivity"
@@ -46,10 +46,7 @@
 
             <!-- Qt runtime metadata -->
             <meta-data android:name="android.app.lib_name"        android:value="appSmartParking"/>
-            <meta-data android:name="android.app.qt_sources_resource_id" android:resource="@array/qt_sources"/>
             <meta-data android:name="android.app.repository"      android:value="default"/>
-            <meta-data android:name="android.app.qt_libs_resource_id"    android:resource="@array/qt_libs"/>
-            <meta-data android:name="android.app.bundled_libs_resource_id" android:resource="@array/bundled_libs"/>
             <meta-data android:name="android.app.use_local_qt_libs"       android:value="1"/>
             <meta-data android:name="android.app.bundle_local_qt_libs"    android:value="1"/>
         </activity>

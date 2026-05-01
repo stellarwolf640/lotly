@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/Downloads/Vocal Extractions Test Files/**)",
+      "Bash(python -c ' *)",
+      "Bash(powershell -Command ' *)",
+      "Bash(dir \"C:/Qt/6.11.0/mingw_64/qml/QtQuick/Controls/\" /b)",
+      "Bash(python3 -m json.tool)",
+      "Bash(\"C:/Qt/Tools/CMake_64/bin/cmake.exe\" --build \"D:/QT Projects/Lotly/build/Qt_6_11_0_for_Android_arm64_v8a-Debug\" --target appSmartParking_prepare_apk_dir)",
+      "Bash(C:/Qt/Tools/CMake_64/bin/cmake.exe --build 'D:/QT Projects/Lotly/build/Qt_6_11_0_for_Android_arm64_v8a-Debug' --target appSmartParking_prepare_apk_dir)",
+      "Bash(\"C:/Qt/Tools/QtCreator/bin/jom/jom.exe\" -f Makefile appSmartParking_prepare_apk_dir)",
+      "Bash(C:/Qt/6.11.0/mingw_64/bin/qmlimportscanner.exe -rootPath 'D:/QT Projects/Lotly/qml' -importPath 'D:/QT Projects/Lotly/build/Qt_6_11_0_for_Android_arm64_v8a-Debug' -importPath 'D:/QT Projects/Lotly/build/Qt_6_11_0_for_Android_arm64_v8a-Debug/SmartParking' -importPath C:/Qt/6.11.0/android_arm64_v8a/qml)",
+      "Bash(\"C:/Qt/6.11.0/mingw_64/bin/androiddeployqt.exe\" --version)",
+      "Bash(C:/Qt/6.11.0/mingw_64/bin/androiddeployqt.exe --input 'D:/QT Projects/Lotly/build/Qt_6_11_0_for_Android_arm64_v8a-Debug/android-appSmartParking-deployment-settings.json' --output 'D:/QT Projects/Lotly/build/Qt_6_11_0_for_Android_arm64_v8a-Debug/android-build-appSmartParking' --android-platform android-36 --jdk 'C:/Program Files/Android/Android Studio/jbr' --verbose)",
+      "WebSearch",
+      "WebFetch(domain:doc.qt.io)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:forum.qt.io)",
+      "WebFetch(domain:phabricator.kde.org)",
+      "WebFetch(domain:bugreports.qt.io)",
+      "WebFetch(domain:qt-project.atlassian.net)",
+      "Bash(C:/Qt/6.11.0/mingw_64/bin/qmlimportscanner.exe -rootPath 'D:/QT Projects/Lotly/qml' -importPath C:/Qt/6.11.0/android_arm64_v8a/qml)"
+    ]
+  }
+}

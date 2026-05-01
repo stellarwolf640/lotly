@@ -7,6 +7,7 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QUrl>
+#include <QDebug>
 
 #include "mapsservice.h"
 
@@ -49,7 +50,11 @@ void AutocompleteService::fetchSuggestions(const QString &input,
         }};
     }
 
-    m_network->post(request, QJsonDocument(body).toJson(QJsonDocument::Compact));
+    const QByteArray requestBody = QJsonDocument(body).toJson(QJsonDocument::Compact);
+    qDebug() << "[Autocomplete] POST"
+             << "https://places.googleapis.com/v1/places:autocomplete"
+             << "body:" << requestBody;
+    m_network->post(request, requestBody);
 }
 
 void AutocompleteService::onReplyFinished(QNetworkReply *reply)
@@ -57,13 +62,19 @@ void AutocompleteService::onReplyFinished(QNetworkReply *reply)
     reply->deleteLater();
 
     if (reply->error() != QNetworkReply::NoError) {
+        qDebug() << "[Autocomplete] Network error:" << reply->errorString()
+                 << "HTTP status:" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
         emit errorOccurred(
             QStringLiteral("Network error: %1").arg(reply->errorString()));
         return;
     }
 
-    const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    const QByteArray responseBody = reply->readAll();
+    qDebug() << "[Autocomplete] Response (" << responseBody.size() << "bytes):" << responseBody;
+
+    const QJsonDocument doc = QJsonDocument::fromJson(responseBody);
     if (doc.isNull()) {
+        qDebug() << "[Autocomplete] Failed to parse JSON response";
         emit suggestionsReady({});
         return;
     }
@@ -71,9 +82,10 @@ void AutocompleteService::onReplyFinished(QNetworkReply *reply)
     const QJsonObject root = doc.object();
 
     if (root.contains(QStringLiteral("error"))) {
-        emit errorOccurred(
-            root.value(QStringLiteral("error")).toObject()
-                .value(QStringLiteral("message")).toString());
+        const QString apiError = root.value(QStringLiteral("error")).toObject()
+                                     .value(QStringLiteral("message")).toString();
+        qDebug() << "[Autocomplete] API error:" << apiError;
+        emit errorOccurred(apiError);
         return;
     }
 
@@ -107,5 +119,6 @@ void AutocompleteService::onReplyFinished(QNetworkReply *reply)
         suggestions.append(item);
     }
 
+    qDebug() << "[Autocomplete] Parsed" << suggestions.size() << "suggestions";
     emit suggestionsReady(suggestions);
 }

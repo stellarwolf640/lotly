@@ -8,8 +8,8 @@ import QtWebView
 Item {
     // Read coordinates from the parent MapScreen via the Loader's item chain.
     // The Loader is inside MapScreen which exposes latitude / longitude.
-    readonly property double latitude:    MapScreen ? MapScreen.latitude    : 35.3050
-    readonly property double longitude:   MapScreen ? MapScreen.longitude   : -120.6626
+    readonly property double latitude:    MapScreen ? MapScreen.latitude    : 0.0
+    readonly property double longitude:   MapScreen ? MapScreen.longitude   : 0.0
     readonly property bool   hasLocation: MapScreen ? MapScreen.hasLocation : false
 
     // Rebuild the URL whenever coordinates change

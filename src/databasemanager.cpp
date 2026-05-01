@@ -1,174 +1,163 @@
 #include "databasemanager.h"
 
 #include <QDebug>
-#include <QDir>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QStandardPaths>
+#include <algorithm>
+#include <functional>
 
-DatabaseManager::DatabaseManager(QObject *parent)
+#include "firestoreservice.h"
+
+// ── Construction ──────────────────────────────────────────────────────────────
+
+DatabaseManager::DatabaseManager(FirestoreService *firestore, QObject *parent)
     : QObject(parent)
+    , m_firestore(firestore)
 {
-    // Store the SQLite file under the OS app-data directory so reports survive restarts.
-    // To wipe all data during development, delete the lotly.db file.
-    const QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    QDir().mkpath(dataPath);
-
-    m_db = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"));
-    m_db.setDatabaseName(dataPath + QStringLiteral("/lotly.db"));
-
-    if (!m_db.open()) {
-        qWarning() << "DatabaseManager: cannot open SQLite database:" << m_db.lastError().text();
-        return;
-    }
-
-    // Enable WAL mode for better concurrent write performance
-    QSqlQuery(QStringLiteral("PRAGMA journal_mode=WAL"), m_db);
-
-    initSchema();
-    seedDefaultUser();
+    Q_ASSERT(m_firestore);
+    connectFirestoreSignals();
 }
 
-DatabaseManager::~DatabaseManager()
+void DatabaseManager::connectFirestoreSignals()
 {
-    if (m_db.isOpen())
-        m_db.close();
+    // ── Parking lots ──────────────────────────────────────────────────────────
+    connect(m_firestore, &FirestoreService::parkingLotsReceived, this,
+            [this](const QList<ParkingLot> &lots) {
+        m_lotsCache = lots;
+        emit dataChanged();
+    });
+
+    // parkingLotStored — no action needed; cache is already up to date.
+
+    // ── All-reports bulk fetch (startup) ──────────────────────────────────────
+    connect(m_firestore, &FirestoreService::allReportsReceived, this,
+            [this](const QList<LotReport> &reports) {
+        // Group the flat list by lotId, replacing each lot's cache entry.
+        // Locally-submitted reports that are not yet in Firestore were prepended
+        // by storeReport() and are therefore newer (smaller index).  We keep
+        // them by merging: if a local entry's timestamp is NOT present in the
+        // fetched set, retain it.
+        QMap<QString, QList<LotReport>> fetched;
+        for (const LotReport &r : reports)
+            fetched[r.lotId()].append(r);
+
+        for (auto it = fetched.constBegin(); it != fetched.constEnd(); ++it) {
+            const QString &lotId      = it.key();
+            const QList<LotReport> &serverReports = it.value();
+
+            // Collect locally-added reports whose timestamps are not in the
+            // server set (they were submitted after the query was issued).
+            QList<LotReport> localOnly;
+            if (m_reportsCache.contains(lotId)) {
+                for (const LotReport &local : m_reportsCache[lotId]) {
+                    bool found = false;
+                    for (const LotReport &srv : serverReports) {
+                        if (srv.userId() == local.userId() &&
+                            srv.timestamp() == local.timestamp()) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                        localOnly.prepend(local);
+                }
+            }
+            // localOnly are ordered newest-first; prepend them before server list
+            m_reportsCache[lotId] = localOnly + serverReports;
+        }
+
+        m_reportsLoaded = true;
+        emit reportsReadyChanged();
+        emit dataChanged();
+    });
+
+    // ── Per-lot report fetch ───────────────────────────────────────────────────
+    connect(m_firestore, &FirestoreService::reportsReceived, this,
+            [this](const QString &lotId, const QList<LotReport> &reports) {
+        m_reportsCache[lotId] = reports;
+        emit dataChanged();
+    });
+
+    connect(m_firestore, &FirestoreService::reportStored, this,
+            [this](const QString &firestoreDocId, const LotReport &report) {
+        // Track the Firestore document ID for this report so we can delete it.
+        const QString key = report.lotId() + QLatin1Char(':')
+                          + report.userId() + QLatin1Char(':')
+                          + report.timestamp().toString(Qt::ISODate);
+        m_reportDocIds[key] = firestoreDocId;
+    });
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+    connect(m_firestore, &FirestoreService::userReceived, this,
+            [this](const User &user) {
+        m_activeUser = user;
+        emit dataChanged();
+    });
+
+    // ── Errors ────────────────────────────────────────────────────────────────
+    connect(m_firestore, &FirestoreService::errorOccurred, this,
+            [](const QString &op, const QString &error) {
+        qWarning() << "[DatabaseManager] Firestore error in" << op << ":" << error;
+    });
 }
 
-// ── Schema ────────────────────────────────────────────────────────────────────
-
-void DatabaseManager::initSchema()
-{
-    QSqlQuery q(m_db);
-
-    q.exec(R"(
-        CREATE TABLE IF NOT EXISTS parking_lots (
-            id            TEXT PRIMARY KEY,
-            name          TEXT NOT NULL,
-            location      TEXT,
-            latitude      REAL DEFAULT 0.0,
-            longitude     REAL DEFAULT 0.0,
-            place_id      TEXT DEFAULT '',
-            total_spaces  INTEGER DEFAULT 0,
-            predicted     INTEGER DEFAULT 0,
-            confidence    REAL DEFAULT 0.35,
-            explanation   TEXT DEFAULT ''
-        )
-    )");
-
-    q.exec(R"(
-        CREATE TABLE IF NOT EXISTS reports (
-            rowid       INTEGER PRIMARY KEY AUTOINCREMENT,
-            lot_id      TEXT NOT NULL,
-            user_id     TEXT NOT NULL,
-            status      INTEGER NOT NULL,
-            trust_score REAL DEFAULT 0.75,
-            timestamp   TEXT NOT NULL
-        )
-    )");
-
-    q.exec(R"(
-        CREATE TABLE IF NOT EXISTS users (
-            id                TEXT PRIMARY KEY,
-            display_name      TEXT,
-            reliability_score REAL DEFAULT 0.75
-        )
-    )");
-
-    // Speed up time-windowed queries used by PredictionEngine
-    q.exec("CREATE INDEX IF NOT EXISTS idx_reports_lot_time ON reports(lot_id, timestamp)");
-}
-
-void DatabaseManager::seedDefaultUser()
-{
-    QSqlQuery q(m_db);
-    q.prepare(R"(INSERT OR IGNORE INTO users (id, display_name, reliability_score) VALUES (?,?,?))");
-    q.addBindValue(QStringLiteral("demo-user"));
-    q.addBindValue(QStringLiteral("Campus Driver"));
-    q.addBindValue(0.82);
-    q.exec();
-
-    m_activeUser = User(QStringLiteral("demo-user"), QStringLiteral("Campus Driver"), 0.82);
-}
-
-// ── Reads ─────────────────────────────────────────────────────────────────────
+// ── Synchronous reads ─────────────────────────────────────────────────────────
 
 QList<ParkingLot> DatabaseManager::parkingLots() const
 {
-    QList<ParkingLot> lots;
-    QSqlQuery q(QStringLiteral(
-        "SELECT id,name,location,latitude,longitude,place_id,"
-        "total_spaces,predicted,confidence,explanation FROM parking_lots"), m_db);
-
-    while (q.next()) {
-        lots.append(ParkingLot(
-            q.value(0).toString(), q.value(1).toString(), q.value(2).toString(),
-            q.value(3).toDouble(),  q.value(4).toDouble(),  q.value(5).toString(),
-            q.value(6).toInt(),     q.value(7).toInt(),
-            q.value(8).toDouble(),  q.value(9).toString()));
-    }
-    return lots;
+    return m_lotsCache;
 }
 
 ParkingLot DatabaseManager::parkingLotById(const QString &lotId) const
 {
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral(
-        "SELECT id,name,location,latitude,longitude,place_id,"
-        "total_spaces,predicted,confidence,explanation FROM parking_lots WHERE id=?"));
-    q.addBindValue(lotId);
-    q.exec();
-
-    if (q.next()) {
-        return ParkingLot(
-            q.value(0).toString(), q.value(1).toString(), q.value(2).toString(),
-            q.value(3).toDouble(),  q.value(4).toDouble(),  q.value(5).toString(),
-            q.value(6).toInt(),     q.value(7).toInt(),
-            q.value(8).toDouble(),  q.value(9).toString());
+    for (const ParkingLot &lot : m_lotsCache) {
+        if (lot.id() == lotId)
+            return lot;
     }
     return {};
 }
 
 QList<LotReport> DatabaseManager::reportsForLot(const QString &lotId) const
 {
-    QList<LotReport> results;
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral(
-        "SELECT lot_id,user_id,status,trust_score,timestamp FROM reports "
-        "WHERE lot_id=? ORDER BY timestamp DESC"));
-    q.addBindValue(lotId);
-    q.exec();
-
-    while (q.next()) {
-        results.append(LotReport(
-            q.value(0).toString(), q.value(1).toString(),
-            static_cast<LotReport::Status>(q.value(2).toInt()),
-            q.value(3).toDouble(),
-            QDateTime::fromString(q.value(4).toString(), Qt::ISODate)));
-    }
-    return results;
+    return m_reportsCache.value(lotId);
 }
 
 QList<LotReport> DatabaseManager::reportsForLotSince(const QString &lotId,
                                                       const QDateTime &since) const
 {
-    QList<LotReport> results;
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral(
-        "SELECT lot_id,user_id,status,trust_score,timestamp FROM reports "
-        "WHERE lot_id=? AND timestamp>=? ORDER BY timestamp DESC"));
-    q.addBindValue(lotId);
-    q.addBindValue(since.toString(Qt::ISODate));
-    q.exec();
-
-    while (q.next()) {
-        results.append(LotReport(
-            q.value(0).toString(), q.value(1).toString(),
-            static_cast<LotReport::Status>(q.value(2).toInt()),
-            q.value(3).toDouble(),
-            QDateTime::fromString(q.value(4).toString(), Qt::ISODate)));
+    QList<LotReport> result;
+    for (const LotReport &r : m_reportsCache.value(lotId)) {
+        if (r.timestamp() >= since)
+            result.append(r);
     }
-    return results;
+    return result;
+}
+
+QList<LotReport> DatabaseManager::reportsForUser(const QString &userId) const
+{
+    QList<LotReport> result;
+    for (auto it = m_reportsCache.constBegin(); it != m_reportsCache.constEnd(); ++it) {
+        for (const LotReport &r : it.value()) {
+            if (r.userId() == userId)
+                result.append(r);
+        }
+    }
+    // Most recent first.
+    std::sort(result.begin(), result.end(), [](const LotReport &a, const LotReport &b) {
+        return a.timestamp() > b.timestamp();
+    });
+    return result;
+}
+
+QDateTime DatabaseManager::lastReportTimeForUser(const QString &userId,
+                                                  const QString &lotId) const
+{
+    QDateTime latest;
+    for (const LotReport &r : m_reportsCache.value(lotId)) {
+        if (r.userId() == userId) {
+            if (!latest.isValid() || r.timestamp() > latest)
+                latest = r.timestamp();
+        }
+    }
+    return latest;
 }
 
 User DatabaseManager::activeUser() const
@@ -180,88 +169,94 @@ User DatabaseManager::activeUser() const
 
 void DatabaseManager::storeReport(const LotReport &report)
 {
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral(
-        "INSERT INTO reports (lot_id,user_id,status,trust_score,timestamp) VALUES (?,?,?,?,?)"));
-    q.addBindValue(report.lotId());
-    q.addBindValue(report.userId());
-    q.addBindValue(static_cast<int>(report.status()));
-    q.addBindValue(report.trustScore());
-    q.addBindValue(report.timestamp().toString(Qt::ISODate));
+    // Update cache immediately so the prediction pipeline sees the new report.
+    m_reportsCache[report.lotId()].prepend(report);
+    emit dataChanged();
 
-    if (!q.exec())
-        qWarning() << "DatabaseManager: storeReport failed:" << q.lastError().text();
-    else
-        emit dataChanged();
+    // Async write — Firestore will emit reportStored with the generated doc ID.
+    m_firestore->storeReport(report);
 }
 
 void DatabaseManager::replaceParkingLots(const QList<ParkingLot> &lots)
 {
-    QSqlQuery q(m_db);
-    q.exec(QStringLiteral("DELETE FROM parking_lots"));
-
-    for (const ParkingLot &lot : lots) {
-        q.prepare(QStringLiteral(R"(
-            INSERT OR REPLACE INTO parking_lots
-            (id,name,location,latitude,longitude,place_id,total_spaces,predicted,confidence,explanation)
-            VALUES (?,?,?,?,?,?,?,?,?,?)
-        )"));
-        q.addBindValue(lot.id());
-        q.addBindValue(lot.name());
-        q.addBindValue(lot.location());
-        q.addBindValue(lot.latitude());
-        q.addBindValue(lot.longitude());
-        q.addBindValue(lot.placeId());
-        q.addBindValue(lot.totalSpaces());
-        q.addBindValue(lot.predictedAvailableSpaces());
-        q.addBindValue(lot.confidence());
-        q.addBindValue(lot.explanation());
-        if (!q.exec())
-            qWarning() << "DatabaseManager: replaceParkingLots insert failed:" << q.lastError().text();
-    }
-
+    m_lotsCache = lots;
     emit dataChanged();
+
+    for (const ParkingLot &lot : lots)
+        m_firestore->storeParkingLot(lot);
 }
 
 void DatabaseManager::updateParkingLot(const ParkingLot &lot)
 {
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral(R"(
-        UPDATE parking_lots
-        SET name=?,location=?,latitude=?,longitude=?,place_id=?,
-            total_spaces=?,predicted=?,confidence=?,explanation=?
-        WHERE id=?
-    )"));
-    q.addBindValue(lot.name());
-    q.addBindValue(lot.location());
-    q.addBindValue(lot.latitude());
-    q.addBindValue(lot.longitude());
-    q.addBindValue(lot.placeId());
-    q.addBindValue(lot.totalSpaces());
-    q.addBindValue(lot.predictedAvailableSpaces());
-    q.addBindValue(lot.confidence());
-    q.addBindValue(lot.explanation());
-    q.addBindValue(lot.id());
-
-    if (!q.exec())
-        qWarning() << "DatabaseManager: updateParkingLot failed:" << q.lastError().text();
-    else
-        emit dataChanged();
+    for (int i = 0; i < m_lotsCache.size(); ++i) {
+        if (m_lotsCache[i].id() == lot.id()) {
+            m_lotsCache[i] = lot;
+            break;
+        }
+    }
+    emit dataChanged();
+    m_firestore->storeParkingLot(lot);
 }
 
 void DatabaseManager::clearSimulatedReports(const QString &lotId)
 {
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral("DELETE FROM reports WHERE lot_id=? AND user_id LIKE 'sim-%'"));
-    q.addBindValue(lotId);
-    q.exec();
-    // No dataChanged — caller decides when to re-run refreshLots
+    removeReports(lotId, [](const LotReport &r) {
+        return r.userId().startsWith(QStringLiteral("sim-"));
+    });
 }
 
 void DatabaseManager::clearAllReportsForLot(const QString &lotId)
 {
-    QSqlQuery q(m_db);
-    q.prepare(QStringLiteral("DELETE FROM reports WHERE lot_id=?"));
-    q.addBindValue(lotId);
-    q.exec();
+    removeReports(lotId, [](const LotReport &) { return true; });
+}
+
+void DatabaseManager::setActiveUser(const User &user)
+{
+    m_activeUser = user;
+}
+
+void DatabaseManager::fetchLotsFromFirestore()
+{
+    m_firestore->fetchParkingLots();
+}
+
+void DatabaseManager::fetchReportsFromFirestore(const QString &lotId)
+{
+    m_firestore->fetchReportsForLot(lotId);
+}
+
+void DatabaseManager::refreshReports()
+{
+    m_firestore->fetchAllReports();
+}
+
+bool DatabaseManager::reportsLoaded() const
+{
+    return m_reportsLoaded;
+}
+
+// ── Private helpers ───────────────────────────────────────────────────────────
+
+void DatabaseManager::removeReports(const QString &lotId,
+                                     std::function<bool(const LotReport &)> predicate)
+{
+    QList<LotReport> &reports = m_reportsCache[lotId];
+    QList<LotReport>  kept;
+
+    for (const LotReport &r : reports) {
+        if (predicate(r)) {
+            // Look up the Firestore document ID and delete remotely.
+            const QString key = lotId + QLatin1Char(':')
+                              + r.userId() + QLatin1Char(':')
+                              + r.timestamp().toString(Qt::ISODate);
+            const QString docId = m_reportDocIds.take(key);
+            if (!docId.isEmpty())
+                m_firestore->deleteDocument(QStringLiteral("lot_reports"), docId);
+        } else {
+            kept.append(r);
+        }
+    }
+
+    reports = kept;
+    // No dataChanged here — caller (SimulationManager) decides when to refresh.
 }

@@ -19,13 +19,16 @@ Page {
 
         signal toggled(bool value)
 
-        implicitHeight: rowLayout.implicitHeight + 20
+        // Minimum 56 dp meets Android touch-target guidelines.
+        implicitHeight: Math.max(56, rowLayout.implicitHeight + 24)
 
         RowLayout {
             id: rowLayout
-            anchors.left:    parent.left
-            anchors.right:   parent.right
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.left:            parent.left
+            anchors.right:           parent.right
+            // 16 dp right margin keeps the switch thumb from touching the card edge.
+            anchors.rightMargin:     16
+            anchors.verticalCenter:  parent.verticalCenter
             spacing: 12
 
             ColumnLayout {
@@ -33,10 +36,12 @@ Page {
                 spacing: 2
 
                 Label {
+                    Layout.fillWidth: true
                     text:           rowRoot.label
                     color:          rowRoot.enabled ? "#E8E5DE" : "#6A6762"
                     font.pixelSize: 16
                     font.bold:      true
+                    wrapMode:       Text.WordWrap
                 }
 
                 Label {
@@ -49,10 +54,20 @@ Page {
                 }
             }
 
+            // Qt built-in Switch — custom indicator replaces the platform style;
+            // padding and contentItem/background are zeroed so no hidden space.
             Switch {
                 id: sw
-                checked:  rowRoot.checked
-                enabled:  rowRoot.enabled
+                checked:         rowRoot.checked
+                enabled:         rowRoot.enabled
+                // Fix the switch size so the layout doesn't under/over-allocate.
+                implicitWidth:   54
+                implicitHeight:  28
+                padding:         0
+                leftPadding:     0
+                rightPadding:    0
+                topPadding:      0
+                bottomPadding:   0
                 onToggled: rowRoot.toggled(checked)
 
                 indicator: Rectangle {
@@ -156,26 +171,24 @@ Page {
                             Layout.fillWidth: true
                             label:       "Dark mode"
                             description: "Use the dark colour scheme"
-                            checked:     settingsManager.darkMode
-                            onToggled:   settingsManager.darkMode = value
-                            // TODO: connect to app-wide palette swap when implemented
+                            checked:     appController.settings.darkMode
+                            onToggled:   appController.settings.darkMode = value
                         }
 
                         SettingRow {
                             Layout.fillWidth: true
                             label:       "Large text"
                             description: "Increase font sizes throughout the app"
-                            checked:     settingsManager.largeText
-                            onToggled:   settingsManager.largeText = value
-                            // TODO: scale font.pixelSize via a global font size multiplier
+                            checked:     appController.settings.largeText
+                            onToggled:   appController.settings.largeText = value
                         }
 
                         SettingRow {
                             Layout.fillWidth: true
                             label:       "High contrast"
                             description: "Boost colour contrast for easier reading"
-                            checked:     settingsManager.highContrast
-                            onToggled:   settingsManager.highContrast = value
+                            checked:     appController.settings.highContrast
+                            onToggled:   appController.settings.highContrast = value
                             // TODO: swap colour tokens to WCAG AA-compliant palette
                         }
                     }
@@ -200,18 +213,18 @@ Page {
                             id: notifMasterRow
                             Layout.fillWidth: true
                             label:       "Enable notifications"
-                            description: "Allow ParkSmart to send you alerts"
-                            checked:     settingsManager.notificationsEnabled
-                            onToggled:   settingsManager.notificationsEnabled = value
+                            description: "Allow Lotly to send you alerts"
+                            checked:     appController.settings.notificationsEnabled
+                            onToggled:   appController.settings.notificationsEnabled = value
                         }
 
                         SettingRow {
                             Layout.fillWidth: true
                             label:       "Report reminders"
                             description: "Remind you to submit a report after parking"
-                            checked:     settingsManager.reportReminders
-                            enabled:     settingsManager.notificationsEnabled
-                            onToggled:   settingsManager.reportReminders = value
+                            checked:     appController.settings.reportReminders
+                            enabled:     appController.settings.notificationsEnabled
+                            onToggled:   appController.settings.reportReminders = value
                             // TODO: schedule notification via NotificationManager
                         }
 
@@ -219,9 +232,9 @@ Page {
                             Layout.fillWidth: true
                             label:       "Nearby lot updates"
                             description: "Alert when a nearby lot frees up significantly"
-                            checked:     settingsManager.nearbyLotUpdates
-                            enabled:     settingsManager.notificationsEnabled
-                            onToggled:   settingsManager.nearbyLotUpdates = value
+                            checked:     appController.settings.nearbyLotUpdates
+                            enabled:     appController.settings.notificationsEnabled
+                            onToggled:   appController.settings.nearbyLotUpdates = value
                             // TODO: trigger background lot polling when enabled
                         }
                     }
@@ -245,9 +258,9 @@ Page {
                         SettingRow {
                             Layout.fillWidth: true
                             label:       "Location services"
-                            description: "Allow ParkSmart to access your location"
-                            checked:     settingsManager.locationEnabled
-                            onToggled:   settingsManager.locationEnabled = value
+                            description: "Allow Lotly to access your location"
+                            checked:     appController.settings.locationEnabled
+                            onToggled:   appController.settings.locationEnabled = value
                             // TODO: request Android location permission when enabled
                         }
 
@@ -255,9 +268,9 @@ Page {
                             Layout.fillWidth: true
                             label:       "Use current location by default"
                             description: "Auto-search nearby lots on app launch"
-                            checked:     settingsManager.useCurrentLocation
-                            enabled:     settingsManager.locationEnabled
-                            onToggled:   settingsManager.useCurrentLocation = value
+                            checked:     appController.settings.useCurrentLocation
+                            enabled:     appController.settings.locationEnabled
+                            onToggled:   appController.settings.useCurrentLocation = value
                             // TODO: on startup, if enabled, call GPS → appController.setSearchLocation()
                         }
                     }
@@ -282,8 +295,8 @@ Page {
                             Layout.fillWidth: true
                             label:       "Larger touch targets"
                             description: "Increase tap area for buttons and controls"
-                            checked:     settingsManager.largerTouchTargets
-                            onToggled:   settingsManager.largerTouchTargets = value
+                            checked:     appController.settings.largerTouchTargets
+                            onToggled:   appController.settings.largerTouchTargets = value
                             // TODO: increase implicitHeight on interactive elements
                         }
 
@@ -291,8 +304,8 @@ Page {
                             Layout.fillWidth: true
                             label:       "Simplified display"
                             description: "Hide charts and confidence details for a cleaner view"
-                            checked:     settingsManager.simplifiedDisplay
-                            onToggled:   settingsManager.simplifiedDisplay = value
+                            checked:     appController.settings.simplifiedDisplay
+                            onToggled:   appController.settings.simplifiedDisplay = value
                             // TODO: bind hourlyCard.visible and confidenceBadge.visible to this flag
                         }
                     }
@@ -314,13 +327,13 @@ Page {
                         spacing: 6
 
                         Label {
-                            text:           "ParkSmart"
+                            text:           "Lotly"
                             color:          "#E8E5DE"
                             font.pixelSize: 17
                             font.bold:      true
                         }
                         Label {
-                            text:           "Smart Parking Availability & Prediction System"
+                            text:           "Smarter parking, powered by you"
                             color:          "#9B988F"
                             font.pixelSize: 13
                             wrapMode:       Text.WordWrap
@@ -332,6 +345,35 @@ Page {
                             font.pixelSize: 12
                         }
                     }
+                }
+
+                // ── ACCOUNT ──────────────────────────────────────────────
+                SectionHeader { text: "ACCOUNT" }
+
+                // Sign-out button — red border, red text, transparent fill
+                Button {
+                    id: signOutBtn
+                    Layout.fillWidth: true
+
+                    onClicked: appController.signOut()
+
+                    background: Rectangle {
+                        radius: 14
+                        color:  "transparent"
+                        border.width: 1.5
+                        border.color: "#D5523F"
+                    }
+
+                    contentItem: Label {
+                        text: "Sign out"
+                        color: "#D5523F"
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment:   Text.AlignVCenter
+                        font.pixelSize: 16
+                        font.bold: true
+                    }
+
+                    implicitHeight: 48
                 }
 
                 // Bottom padding

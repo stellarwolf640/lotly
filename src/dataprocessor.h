@@ -1,21 +1,41 @@
 #pragma once
 
+#include <QDateTime>
 #include <QList>
 
 #include "lotreport.h"
 
+// DataProcessor produces weighted statistics from a list of LotReports.
+//
+// Weight for a report is the product of three factors:
+//   1. Age decay     — how recently the report was submitted (vs now)
+//   2. Hour proximity — how close the report's hour is to the target hour
+//   3. Trust score   — submitter reliability (0–1 from User.reliabilityScore)
+//
+// Severity scale: 0.0 = lot empty, 1.0 = lot completely full.
+// The Status enum maps as: Empty→0.00, Moderate→0.33, NearlyFull→0.67, Full→1.00
 class DataProcessor
 {
 public:
-    // Simple unweighted average severity (0 = empty, 3 = full)
-    double reportSeverityAverage(const QList<LotReport> &reports) const;
+    // ── Core weight computation ───────────────────────────────────────────────
 
-    // Trust-weighted severity — each report is weighted by its submitter's trust score.
-    // This is the primary method used by PredictionEngine.
-    double reportSeverityWeighted(const QList<LotReport> &reports) const;
+    // Returns the combined weight for one report when predicting targetHour.
+    // Returns 0 if the report timestamp is in the future or invalid.
+    double computeReportWeight(const LotReport &report,
+                               int targetHour,
+                               const QDateTime &now) const;
 
-    // Sum of trust scores across all reports (used as a data-sufficiency measure)
-    double totalTrustWeight(const QList<LotReport> &reports) const;
+    // ── Aggregates ────────────────────────────────────────────────────────────
 
-    int latestReportCount(const QList<LotReport> &reports) const;
+    // Weighted-average severity (0.0–1.0) for targetHour.
+    // Returns -1.0 when totalTimeWeight() < a meaningful threshold (no data).
+    double reportSeverityTimeWeighted(const QList<LotReport> &reports,
+                                      int targetHour,
+                                      const QDateTime &now) const;
+
+    // Sum of all report weights for targetHour.
+    // Used by PredictionEngine (blend factor) and ConfidenceCalculator.
+    double totalTimeWeight(const QList<LotReport> &reports,
+                           int targetHour,
+                           const QDateTime &now) const;
 };

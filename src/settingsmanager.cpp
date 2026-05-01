@@ -2,7 +2,7 @@
 
 SettingsManager::SettingsManager(QObject *parent)
     : QObject(parent)
-    , m_settings(QStringLiteral("Lotly"), QStringLiteral("ParkSmart"))
+    , m_settings(QStringLiteral("Lotly"), QStringLiteral("Lotly"))
 {
     // Load persisted values, falling back to the defaults declared in the header.
     m_darkMode             = m_settings.value(QStringLiteral("display/darkMode"),             true).toBool();
@@ -31,6 +31,7 @@ void SettingsManager::setDarkMode(bool v) {
 }
 void SettingsManager::setLargeText(bool v) {
     writeSetting(QStringLiteral("display/largeText"), v, m_largeText, &SettingsManager::largeTextChanged);
+    emit baseFontSizeChanged();   // baseFontSize is derived from m_largeText
 }
 void SettingsManager::setHighContrast(bool v) {
     writeSetting(QStringLiteral("display/highContrast"), v, m_highContrast, &SettingsManager::highContrastChanged);
@@ -68,6 +69,10 @@ void SettingsManager::setUseCurrentLocation(bool v) {
 
 bool SettingsManager::largerTouchTargets() const { return m_largerTouchTargets; }
 bool SettingsManager::simplifiedDisplay()  const { return m_simplifiedDisplay; }
+
+// ── Derived ───────────────────────────────────────────────────────────────────
+
+int SettingsManager::baseFontSize() const { return m_largeText ? 18 : 14; }
 
 void SettingsManager::setLargerTouchTargets(bool v) {
     writeSetting(QStringLiteral("accessibility/largerTargets"), v, m_largerTouchTargets, &SettingsManager::largerTouchTargetsChanged);

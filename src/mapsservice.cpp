@@ -9,7 +9,7 @@
 #include <QUrl>
 
 const QString MapsService::PLACEHOLDER_API_KEY =
-    QStringLiteral("AIzaSyCceEAjZyoWeQ6wN2cIflHH6LH-3ib0Sfc");
+    QStringLiteral("AIzaSyDB0bD3_EOtFn21QQkDCtueCxfCqy1SpoI");
 
 MapsService::MapsService(QObject *parent)
     : QObject(parent)

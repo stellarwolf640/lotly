@@ -20,8 +20,8 @@ import QtQuick.Layouts
 Page {
     id: root
 
-    property double latitude:    35.3050
-    property double longitude:  -120.6626
+    property double latitude:    0.0
+    property double longitude:   0.0
     property bool   hasLocation: false
 
     background: Rectangle { color: "#151515" }

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "235080414842",
+    "project_id": "project-57ed75dd-e5b1-47d8-94b",
+    "storage_bucket": "project-57ed75dd-e5b1-47d8-94b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235080414842:android:a9b4937d9a3e8e26276dc3",
+        "android_client_info": {
+          "package_name": "com.lotly.smartparking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "235080414842-ja0lrj8ikf77c4uja9p8duo1u0mc22qt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lotly.smartparking",
+            "certificate_hash": "d9af078e494c742e5b58a63b6c3dd70d8a4a20db"
+          }
+        },
+        {
+          "client_id": "235080414842-9vpq14ds4mf598l05ppmipca10cp7nbq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChZgtYbJcIdES0iOkxhMs_z7GqkCiCG2w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "235080414842-9vpq14ds4mf598l05ppmipca10cp7nbq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

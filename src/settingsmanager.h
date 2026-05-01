@@ -37,6 +37,11 @@ class SettingsManager : public QObject
     Q_PROPERTY(bool largerTouchTargets READ largerTouchTargets WRITE setLargerTouchTargets NOTIFY largerTouchTargetsChanged)
     Q_PROPERTY(bool simplifiedDisplay  READ simplifiedDisplay  WRITE setSimplifiedDisplay  NOTIFY simplifiedDisplayChanged)
 
+    // ── Derived / computed ────────────────────────────────────────────────────
+    // Returns 14 normally; 18 when largeText is on. Emits baseFontSizeChanged
+    // whenever largeText changes so QML bindings update automatically.
+    Q_PROPERTY(int baseFontSize READ baseFontSize NOTIFY baseFontSizeChanged)
+
 public:
     explicit SettingsManager(QObject *parent = nullptr);
 
@@ -53,6 +58,7 @@ public:
 
     bool largerTouchTargets() const;
     bool simplifiedDisplay()  const;
+    int  baseFontSize()       const;
 
 public slots:
     void setDarkMode(bool v);
@@ -83,6 +89,7 @@ signals:
 
     void largerTouchTargetsChanged();
     void simplifiedDisplayChanged();
+    void baseFontSizeChanged();
 
 private:
     template<typename T>

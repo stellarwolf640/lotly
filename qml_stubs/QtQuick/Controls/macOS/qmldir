@@ -1,0 +1,3 @@
+module QtQuick.Controls.macOS
+# Stub — satisfies qmlls import resolution on non-macOS Qt kits.
+# This module does not ship on Windows/Android; the Material style is used instead.

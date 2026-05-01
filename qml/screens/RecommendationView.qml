@@ -72,7 +72,7 @@ Page {
 
                             Label {
                                 Layout.fillWidth: true
-                                text: root.bestLot.name || "Lot A -- North"
+                                text: root.bestLot.name || ""
                                 color: "#F5F3EE"
                                 font.pixelSize: 22
                                 font.bold: true
@@ -147,7 +147,7 @@ Page {
 
                             Label {
                                 Layout.fillWidth: true
-                                text: root.backupLot.name || "Lot D -- Visitor"
+                                text: root.backupLot.name || ""
                                 color: "#F5F3EE"
                                 font.pixelSize: 20
                                 font.bold: true
