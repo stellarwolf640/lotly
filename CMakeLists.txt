@@ -154,10 +154,17 @@ set_target_properties(appSmartParking PROPERTIES
 # shipped inside the APK.  The android_openssl package installs them via the
 # Qt SDK's sdkmanager integration.
 if(ANDROID)
+    if(DEFINED ENV{ANDROID_SDK_ROOT})
+        set(ANDROID_SDK_ROOT_PATH $ENV{ANDROID_SDK_ROOT})
+    elseif(WIN32)
+        set(ANDROID_SDK_ROOT_PATH "$ENV{LOCALAPPDATA}/Android/Sdk")
+    endif()
+
+    set(OPENSSL_ROOT "${ANDROID_SDK_ROOT_PATH}/android_openssl/ssl_3/${ANDROID_ABI}")
+
     set_target_properties(appSmartParking PROPERTIES
         QT_ANDROID_EXTRA_LIBS
-            "C:/Users/Ethan Oscarson/AppData/Local/Android/Sdk/android_openssl/ssl_3/arm64-v8a/libssl_3.so\
-;C:/Users/Ethan Oscarson/AppData/Local/Android/Sdk/android_openssl/ssl_3/arm64-v8a/libcrypto_3.so"
+        "${OPENSSL_ROOT}/libssl_3.so;${OPENSSL_ROOT}/libcrypto_3.so"
     )
 endif()
 

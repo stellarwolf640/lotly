@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "235080414842-03d7akmu1jt855o0ej8c9ki1i85ledgf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lotly.smartparking",
+            "certificate_hash": "26ff933968a33c15b0171def11ee23954e891205"
+          }
+        },
+        {
           "client_id": "235080414842-ja0lrj8ikf77c4uja9p8duo1u0mc22qt.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
