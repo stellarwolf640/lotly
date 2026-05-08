@@ -1,23 +1,44 @@
-# Smart Parking Availability & Prediction System
+# Lotly
 
-Qt Quick + QML starter application intended for Qt Creator with an Android kit.
+A crowdsourced smart parking availability and prediction system for university campuses, built with Qt 6 and QML, with Firebase Firestore for cloud data sync and Google Sign-In for user authentication.
 
-## What is included
+## Description
 
-- QML presentation layer with four main screens
-- C++ business-logic layer with placeholder service classes
-- In-memory mock data behind a `DatabaseManager` abstraction
-- QML-facing `AppController` and `ParkingLotModel`
+Lotly addresses the inefficiency of campus parking by combining real-time crowdsourced reports with historical patterns to generate predictive availability data. Rather than just answering *"where are parking spaces?"*, Lotly answers *"where should I park right now, and how reliable is that choice?"*
 
-## Open in Qt Creator
+Users sign in with their Google account, view nearby parking lots ranked by predicted availability, see confidence-weighted recommendations, and contribute reports that improve predictions for everyone. The system uses time-decayed weighting to prioritize recent reports while preserving the value of historical data.
 
-1. Open [CMakeLists.txt](C:/Users/Ethan Oscarson/Documents/New%20project/CMakeLists.txt).
-2. Configure the project with a Qt 6.5+ Android kit.
-3. Build and run on an Android emulator or device.
+## Team Members
 
-## Planned extension points
+- Ethan Oscarson
 
-- Replace mock prediction logic inside `PredictionEngine`
-- Add reliability weighting and anomaly detection in `DataProcessor`
-- Swap `DatabaseManager` from in-memory storage to Firebase or another backend
-- Replace `NotificationManager` placeholder prompts with real Android notifications
+## Technologies Used
+
+**Frontend**
+- Qt 6.11.0
+- QML / Qt Quick Controls 2
+- C++17
+
+**Backend / Cloud**
+- Google Cloud Firestore (NoSQL document database)
+- Firebase Authentication (Google Sign-In via Credential Manager)
+- Google Maps Platform — Places API (New), Geocoding API, Maps SDK for Android
+
+**Mobile / Native**
+- Android SDK (API 36)
+- Android NDK 27.2.12479018
+- AndroidX Credential Manager
+- JNI (C++ ↔ Java interop)
+
+**Build Tools**
+- CMake 3.30+
+- Gradle 9.3.1
+- Android Gradle Plugin 9.0.0
+
+**Development Environment**
+- Qt Creator 16.0+
+- Android Studio (for SDK/NDK management)
+
+## Setup & Build
+
+For complete setup instructions including required tools, Firebase configuration, API keys, and deployment steps, see [SETUP.md](SETUP.md).
